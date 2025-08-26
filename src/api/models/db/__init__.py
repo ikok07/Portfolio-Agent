@@ -1,2 +1,2 @@
 from .profiles import *
-from .companies import *
+from .chatbot_sessions import *
