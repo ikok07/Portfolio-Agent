@@ -1,0 +1,13 @@
+pydantic~=2.11.7
+chromadb~=1.0.20
+langchain-core~=0.3.74
+langchain-text-splitters~=0.3.9
+fastapi~=0.116.1
+starlette~=0.47.3
+svix~=1.74.1
+PyPDF2~=3.0.1
+aiosqlite~=0.21.0
+langgraph~=0.6.6
+langchain-openai~=0.3.31
+requests~=2.32.5
+python-dotenv~=1.1.1
