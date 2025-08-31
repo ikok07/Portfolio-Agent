@@ -1,8 +1,5 @@
 import os
-import pprint
-import time
 import uuid
-from argparse import ArgumentError
 from datetime import datetime
 from typing import TypedDict
 
@@ -10,6 +7,14 @@ import chromadb
 from chromadb import GetResult
 from chromadb.utils.embedding_functions import OpenAIEmbeddingFunction
 from pydantic import BaseModel
+from enum import Enum
+
+class SupportedFileType(str, Enum):
+    txt = "text/plain"
+    markdown = "text/markdown"
+    rtf="text/rtf"
+    pdf="application/pdf"
+
 
 class DocumentMetadata(TypedDict):
     user_id: str
@@ -30,7 +35,7 @@ class StoreFullFile(BaseModel):
 class VectorStore:
     chroma_client = chromadb.CloudClient(
         api_key=os.getenv("CHROMADB_API_KEY"),
-        database="email-support-agent"
+        database=os.getenv("VECTOR_STORE_DATABASE")
     )
     embedding_function = OpenAIEmbeddingFunction(
         api_key=os.getenv("OPENAI_API_KEY"),
@@ -81,6 +86,19 @@ class VectorStore:
     def get_docs_by_user_id(user_id: str, collection_name: str) -> list[StoreDocument]:
         collection = VectorStore.chroma_client.get_collection(collection_name)
         docs: GetResult = collection.get(where={"user_id": user_id})
+
+        return [
+            StoreDocument(
+                id=docs["ids"][index],
+                text=docs["documents"][index],
+                metadata=DocumentMetadata(**docs["metadatas"][index])
+            ) for index, doc in enumerate(docs["documents"])
+        ]
+
+    @staticmethod
+    def get_docs_by_filename(filename: str, collection_name: str) -> list[StoreDocument]:
+        collection = VectorStore.chroma_client.get_collection(collection_name)
+        docs: GetResult = collection.get(where={"filename": filename})
 
         return [
             StoreDocument(
@@ -149,5 +167,3 @@ class VectorStore:
                 {"user_id": user_id}
             ]}
         )
-
-

@@ -12,11 +12,10 @@ from starlette import status
 
 from src.api.dependencies.protect import protect_dependency
 from src.api.models.db.profiles import Profile
-from src.api.models.enums.supported_filetypes import SupportedFileType
 from src.api.models.errors.api_error import APIError
 from src.api.models.response.generic import GenericResponse
 from src.api.models.services.text_splitter import TextSplitter
-from src.api.models.services.vector_store import VectorStore, StoreFullFile
+from src.api.models.services.vector_store import VectorStore, StoreFullFile, SupportedFileType
 
 router = APIRouter()
 collection = "user-files"
